@@ -1,6 +1,6 @@
 // React and React Native imports
 import React, { Component } from 'react';
-import { View, StyleSheet, View as RNView } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { View as AnimatableView } from 'react-native-animatable';
 
@@ -12,7 +12,7 @@ let ViewPropTypes = { style: PropTypes.any };
 try {
   const Deprecated = require('deprecated-react-native-prop-types').ViewPropTypes;
   if (Deprecated) ViewPropTypes = Deprecated;
-} catch (e) {
+} catch {
   // fallback already defined
 }
 
@@ -39,7 +39,7 @@ class StarRating extends Component {
 
   onStarButtonPress = (rating) => {
     const { selectedStar } = this.props;
-    selectedStar?.(rating);
+    if (typeof selectedStar === 'function') selectedStar(rating);
   };
 
   render() {
@@ -131,6 +131,7 @@ class StarRating extends Component {
 }
 
 // --------------------------------------------------------------------
+// PropTypes & Default Props
 
 StarRating.propTypes = {
   activeOpacity: PropTypes.number,
@@ -138,11 +139,23 @@ StarRating.propTypes = {
   buttonStyle: ViewPropTypes.style,
   containerStyle: ViewPropTypes.style,
   disabled: PropTypes.bool,
-  emptyStar: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.number]),
+  emptyStar: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
+    PropTypes.number,
+  ]),
   emptyStarColor: PropTypes.string,
-  fullStar: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.number]),
+  fullStar: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
+    PropTypes.number,
+  ]),
   fullStarColor: PropTypes.string,
-  halfStar: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.number]),
+  halfStar: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
+    PropTypes.number,
+  ]),
   halfStarColor: PropTypes.string,
   halfStarEnabled: PropTypes.bool,
   icoMoonJson: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),

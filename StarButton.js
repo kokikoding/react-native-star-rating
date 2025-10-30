@@ -1,6 +1,6 @@
 // React and React Native imports
 import React, { Component } from 'react';
-import { Image, StyleSheet, ViewPropTypes as RNViewPropTypes } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { createIconSetFromIcoMoon } from 'react-native-vector-icons';
 
@@ -18,19 +18,16 @@ import OcticonsIcons from 'react-native-vector-icons/Octicons';
 import ZocialIcons from 'react-native-vector-icons/Zocial';
 import SimpleLineIconsIcons from 'react-native-vector-icons/SimpleLineIcons';
 
-// ✅ RN 0.71+ removed ViewPropTypes; use deprecated package if available
-let ViewPropTypes = RNViewPropTypes;
+// ✅ Use deprecated-react-native-prop-types for RN 0.71+
+let ViewPropTypes;
 try {
-  // Optional import for legacy apps
-  const Deprecated = require('deprecated-react-native-prop-types').ViewPropTypes;
-  if (Deprecated) ViewPropTypes = Deprecated;
+  ViewPropTypes = require('deprecated-react-native-prop-types').ViewPropTypes;
 } catch (e) {
-  // fallback — avoid crash if package not present
   ViewPropTypes = { style: PropTypes.any };
 }
 
 // --------------------------------------------------------------------
-
+// Supported icon sets
 const iconSets = {
   Entypo: EntypoIcons,
   EvilIcons: EvilIconsIcons,
@@ -45,6 +42,8 @@ const iconSets = {
   SimpleLineIcons: SimpleLineIconsIcons,
 };
 
+// --------------------------------------------------------------------
+// Star Button Component
 class StarButton extends Component {
   onButtonPress = (event) => {
     const { halfStarEnabled, starSize, rating, onStarButtonPress } = this.props;
@@ -59,7 +58,7 @@ class StarButton extends Component {
   iconSetFromProps() {
     const { icoMoonJson, iconSet } = this.props;
     if (icoMoonJson) return createIconSetFromIcoMoon(icoMoonJson);
-    return iconSets[iconSet];
+    return iconSets[iconSet] || FontAwesomeIcons;
   }
 
   renderIcon() {
@@ -88,12 +87,7 @@ class StarButton extends Component {
       resizeMode: 'contain',
     };
 
-    return (
-      <Image
-        source={starIconName}
-        style={[imageStyle, newStarStyle]}
-      />
-    );
+    return <Image source={starIconName} style={[imageStyle, newStarStyle]} />;
   }
 
   render() {
@@ -112,13 +106,13 @@ class StarButton extends Component {
 }
 
 // --------------------------------------------------------------------
-
+// PropTypes & Defaults
 StarButton.propTypes = {
   buttonStyle: ViewPropTypes.style,
   disabled: PropTypes.bool,
   halfStarEnabled: PropTypes.bool,
   icoMoonJson: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  iconSet: PropTypes.string.isRequired,
+  iconSet: PropTypes.string,
   rating: PropTypes.number.isRequired,
   reversed: PropTypes.bool,
   starColor: PropTypes.string,
@@ -140,9 +134,10 @@ StarButton.defaultProps = {
   disabled: false,
   halfStarEnabled: false,
   reversed: false,
-  starColor: '#FFD700',
+  starColor: '#FFD700', // Gold default
   starSize: 30,
   activeOpacity: 0.7,
+  iconSet: 'FontAwesome',
 };
 
 export default StarButton;
