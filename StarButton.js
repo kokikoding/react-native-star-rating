@@ -1,11 +1,10 @@
-// React and react native imports
+// React and React Native imports
 import React, { Component } from 'react';
-import { Image, StyleSheet } from 'react-native';
-import {ViewPropTypes} from 'deprecated-react-native-prop-types';
+import { Image, StyleSheet, ViewPropTypes as RNViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { createIconSetFromIcoMoon } from 'react-native-vector-icons';
 
-// Third party imports
+// Third-party imports
 import Button from 'react-native-button';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import EvilIconsIcons from 'react-native-vector-icons/EvilIcons';
@@ -18,6 +17,19 @@ import MaterialCommunityIconsIcons from 'react-native-vector-icons/MaterialCommu
 import OcticonsIcons from 'react-native-vector-icons/Octicons';
 import ZocialIcons from 'react-native-vector-icons/Zocial';
 import SimpleLineIconsIcons from 'react-native-vector-icons/SimpleLineIcons';
+
+// ✅ RN 0.71+ removed ViewPropTypes; use deprecated package if available
+let ViewPropTypes = RNViewPropTypes;
+try {
+  // Optional import for legacy apps
+  const Deprecated = require('deprecated-react-native-prop-types').ViewPropTypes;
+  if (Deprecated) ViewPropTypes = Deprecated;
+} catch (e) {
+  // fallback — avoid crash if package not present
+  ViewPropTypes = { style: PropTypes.any };
+}
+
+// --------------------------------------------------------------------
 
 const iconSets = {
   Entypo: EntypoIcons,
@@ -33,90 +45,34 @@ const iconSets = {
   SimpleLineIcons: SimpleLineIconsIcons,
 };
 
-const propTypes = {
-  buttonStyle: ViewPropTypes.style,
-  disabled: PropTypes.bool.isRequired,
-  halfStarEnabled: PropTypes.bool.isRequired,
-  icoMoonJson: PropTypes.string,
-  iconSet: PropTypes.string.isRequired,
-  rating: PropTypes.number.isRequired,
-  reversed: PropTypes.bool.isRequired,
-  starColor: PropTypes.string.isRequired,
-  starIconName: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object,
-    PropTypes.number,
-  ]).isRequired,
-  starSize: PropTypes.number.isRequired,
-  activeOpacity: PropTypes.number.isRequired,
-  starStyle: ViewPropTypes.style,
-  onStarButtonPress: PropTypes.func.isRequired,
-};
-
-const defaultProps = {
-  buttonStyle: {},
-  icoMoonJson: undefined,
-  starStyle: {},
-};
-
 class StarButton extends Component {
-  constructor(props) {
-    super(props);
-
-    this.onButtonPress = this.onButtonPress.bind(this);
-  }
-
-  onButtonPress(event) {
-    const {
-      halfStarEnabled,
-      starSize,
-      rating,
-      onStarButtonPress,
-    } = this.props;
-
+  onButtonPress = (event) => {
+    const { halfStarEnabled, starSize, rating, onStarButtonPress } = this.props;
     let addition = 0;
-
     if (halfStarEnabled) {
       const isHalfSelected = event.nativeEvent.locationX < starSize / 2;
       addition = isHalfSelected ? -0.5 : 0;
     }
-
     onStarButtonPress(rating + addition);
-  }
+  };
 
   iconSetFromProps() {
-    const {
-      icoMoonJson,
-      iconSet,
-    } = this.props;
-    if (icoMoonJson) {
-      return createIconSetFromIcoMoon(icoMoonJson);
-    }
-
+    const { icoMoonJson, iconSet } = this.props;
+    if (icoMoonJson) return createIconSetFromIcoMoon(icoMoonJson);
     return iconSets[iconSet];
   }
 
   renderIcon() {
-    const {
-      reversed,
-      starColor,
-      starIconName,
-      starSize,
-      starStyle,
-    } = this.props;
-
+    const { reversed, starColor, starIconName, starSize, starStyle } = this.props;
     const Icon = this.iconSetFromProps();
-    let iconElement;
 
     const newStarStyle = {
-      transform: [{
-        scaleX: reversed ? -1 : 1,
-      }],
+      transform: [{ scaleX: reversed ? -1 : 1 }],
       ...StyleSheet.flatten(starStyle),
     };
 
     if (typeof starIconName === 'string') {
-      iconElement = (
+      return (
         <Icon
           name={starIconName}
           size={starSize}
@@ -124,36 +80,24 @@ class StarButton extends Component {
           style={newStarStyle}
         />
       );
-    } else {
-      const imageStyle = {
-        width: starSize,
-        height: starSize,
-        resizeMode: 'contain',
-      };
-
-      const iconStyles = [
-        imageStyle,
-        newStarStyle,
-      ];
-
-      iconElement = (
-        <Image
-          source={starIconName}
-          style={iconStyles}
-        />
-      );
     }
 
-    return iconElement;
+    const imageStyle = {
+      width: starSize,
+      height: starSize,
+      resizeMode: 'contain',
+    };
+
+    return (
+      <Image
+        source={starIconName}
+        style={[imageStyle, newStarStyle]}
+      />
+    );
   }
 
   render() {
-    const {
-      activeOpacity,
-      buttonStyle,
-      disabled,
-    } = this.props;
-
+    const { activeOpacity, buttonStyle, disabled } = this.props;
     return (
       <Button
         activeOpacity={activeOpacity}
@@ -167,7 +111,38 @@ class StarButton extends Component {
   }
 }
 
-StarButton.propTypes = propTypes;
-StarButton.defaultProps = defaultProps;
+// --------------------------------------------------------------------
+
+StarButton.propTypes = {
+  buttonStyle: ViewPropTypes.style,
+  disabled: PropTypes.bool,
+  halfStarEnabled: PropTypes.bool,
+  icoMoonJson: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  iconSet: PropTypes.string.isRequired,
+  rating: PropTypes.number.isRequired,
+  reversed: PropTypes.bool,
+  starColor: PropTypes.string,
+  starIconName: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
+    PropTypes.number,
+  ]).isRequired,
+  starSize: PropTypes.number,
+  activeOpacity: PropTypes.number,
+  starStyle: ViewPropTypes.style,
+  onStarButtonPress: PropTypes.func.isRequired,
+};
+
+StarButton.defaultProps = {
+  buttonStyle: {},
+  icoMoonJson: undefined,
+  starStyle: {},
+  disabled: false,
+  halfStarEnabled: false,
+  reversed: false,
+  starColor: '#FFD700',
+  starSize: 30,
+  activeOpacity: 0.7,
+};
 
 export default StarButton;
