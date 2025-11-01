@@ -136,8 +136,6 @@ class StarRating extends Component {
 StarRating.propTypes = {
   activeOpacity: PropTypes.number,
   animation: PropTypes.oneOf(ANIMATION_TYPES),
-  buttonStyle: ViewPropTypes.style,
-  containerStyle: ViewPropTypes.style,
   disabled: PropTypes.bool,
   emptyStar: PropTypes.oneOfType([
     PropTypes.string,
@@ -164,7 +162,6 @@ StarRating.propTypes = {
   rating: PropTypes.number,
   reversed: PropTypes.bool,
   starSize: PropTypes.number,
-  starStyle: ViewPropTypes.style,
   selectedStar: PropTypes.func,
 };
 

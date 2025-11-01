@@ -108,7 +108,6 @@ class StarButton extends Component {
 // --------------------------------------------------------------------
 // PropTypes & Defaults
 StarButton.propTypes = {
-  buttonStyle: ViewPropTypes.style,
   disabled: PropTypes.bool,
   halfStarEnabled: PropTypes.bool,
   icoMoonJson: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
@@ -123,7 +122,6 @@ StarButton.propTypes = {
   ]).isRequired,
   starSize: PropTypes.number,
   activeOpacity: PropTypes.number,
-  starStyle: ViewPropTypes.style,
   onStarButtonPress: PropTypes.func.isRequired,
 };
 
