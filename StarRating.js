@@ -7,15 +7,6 @@ import { View as AnimatableView } from 'react-native-animatable';
 // Local file imports
 import StarButton from './StarButton';
 
-// ✅ Safe ViewPropTypes fallback (RN 0.81+ removed it)
-let ViewPropTypes = { style: PropTypes.any };
-try {
-  const Deprecated = require('deprecated-react-native-prop-types').ViewPropTypes;
-  if (Deprecated) ViewPropTypes = Deprecated;
-} catch {
-  // fallback already defined
-}
-
 // --------------------------------------------------------------------
 
 const ANIMATION_TYPES = [

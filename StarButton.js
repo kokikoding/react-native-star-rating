@@ -18,14 +18,6 @@ import OcticonsIcons from 'react-native-vector-icons/Octicons';
 import ZocialIcons from 'react-native-vector-icons/Zocial';
 import SimpleLineIconsIcons from 'react-native-vector-icons/SimpleLineIcons';
 
-// ✅ Use deprecated-react-native-prop-types for RN 0.71+
-let ViewPropTypes;
-try {
-  ViewPropTypes = require('deprecated-react-native-prop-types').ViewPropTypes;
-} catch (e) {
-  ViewPropTypes = { style: PropTypes.any };
-}
-
 // --------------------------------------------------------------------
 // Supported icon sets
 const iconSets = {
